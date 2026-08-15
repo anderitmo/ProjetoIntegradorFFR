@@ -30,16 +30,21 @@ $grupoTema = $_SESSION['grupo_tema'] ?? 'Projeto Integrador';
             background-color: #ffffff;
             border-bottom: 1px solid #e2e8f0;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            padding: 0.75rem 1rem;
+        }
+        .brand-title {
+            font-size: clamp(1rem, 4vw, 1.25rem);
         }
         .kanban-board {
             display: flex;
-            gap: 1.25rem;
+            gap: 1rem;
             overflow-x: auto;
             padding-bottom: 1.5rem;
+            -webkit-overflow-scrolling: touch;
         }
         .kanban-col {
-            flex: 1;
-            min-width: 280px;
+            flex: 0 0 280px;
+            width: 280px;
             background-color: #ffffff;
             border-radius: 12px;
             border: 1px solid #e2e8f0;
@@ -48,13 +53,20 @@ $grupoTema = $_SESSION['grupo_tema'] ?? 'Projeto Integrador';
             max-height: 80vh;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02);
         }
+        @media (min-width: 992px) {
+            .kanban-col {
+                flex: 1;
+                width: auto;
+            }
+        }
         .col-header {
-            padding: 1rem;
+            padding: 0.85rem 1rem;
             font-weight: 700;
             border-bottom: 1px solid #e2e8f0;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 0.95rem;
         }
         .col-header.a_fazer { color: #dc2626; border-top: 4px solid #ef4444; border-radius: 12px 12px 0 0; }
         .col-header.em_andamento { color: #d97706; border-top: 4px solid #f59e0b; border-radius: 12px 12px 0 0; }
@@ -62,7 +74,7 @@ $grupoTema = $_SESSION['grupo_tema'] ?? 'Projeto Integrador';
         .col-header.concluido { color: #059669; border-top: 4px solid #10b981; border-radius: 12px 12px 0 0; }
 
         .cards-container {
-            padding: 1rem;
+            padding: 0.85rem;
             flex-grow: 1;
             overflow-y: auto;
             min-height: 150px;
@@ -72,18 +84,14 @@ $grupoTema = $_SESSION['grupo_tema'] ?? 'Projeto Integrador';
             background-color: #ffffff;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 0.85rem;
+            padding: 0.85rem;
+            margin-bottom: 0.75rem;
             cursor: grab;
             transition: all 0.2s ease;
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
         }
         .kanban-card:active {
             cursor: grabbing;
-        }
-        .kanban-card:hover {
-            border-color: #38bdf8;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
         .badge-version {
             background-color: #0284c7;
@@ -96,27 +104,28 @@ $grupoTema = $_SESSION['grupo_tema'] ?? 'Projeto Integrador';
             font-size: 0.825rem;
             color: #334155;
             border-left: 3px solid #0284c7;
+            word-break: break-word;
         }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-light navbar-custom px-4 mb-4">
-    <div class="container-fluid">
-        <span class="navbar-brand mb-0 h1 text-primary fw-bold">
-            <i class="fa-solid fa-kanban me-2"></i>PI Kanban | <?php echo htmlspecialchars($grupoTema); ?>
+<nav class="navbar navbar-light navbar-custom mb-3">
+    <div class="container-fluid d-flex flex-row justify-content-between align-items-center">
+        <span class="navbar-brand mb-0 brand-title text-primary fw-bold text-truncate" style="max-width: 65%;">
+            <i class="fa-solid fa-kanban me-1 me-sm-2"></i>PI | <?php echo htmlspecialchars($grupoTema); ?>
         </span>
-        <div class="d-flex align-items-center gap-3">
-            <span class="text-secondary fw-semibold"><i class="fa-solid fa-user me-1 text-primary"></i> <?php echo htmlspecialchars($alunoNome); ?></span>
+        <div class="d-flex align-items-center gap-2 gap-sm-3">
+            <span class="text-secondary fw-semibold small d-none d-sm-inline"><i class="fa-solid fa-user me-1 text-primary"></i> <?php echo htmlspecialchars($alunoNome); ?></span>
             <a href="index.php" class="btn btn-outline-danger btn-sm fw-semibold"><i class="fa-solid fa-right-from-bracket me-1"></i>Sair</a>
         </div>
     </div>
 </nav>
 
-<div class="container-fluid px-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="fw-bold text-slate-800">Quadro Kanban do Grupo</h4>
-        <button class="btn btn-sm btn-outline-primary fw-semibold" onclick="carregarTarefas()"><i class="fa-solid fa-rotate me-1"></i>Atualizar Quadro</button>
+<div class="container-fluid px-2 px-sm-4">
+    <div class="d-flex flex-row justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-slate-800 mb-0 fs-6 fs-sm-5">Quadro Kanban</h5>
+        <button class="btn btn-sm btn-outline-primary fw-semibold" onclick="carregarTarefas()"><i class="fa-solid fa-rotate me-1"></i>Atualizar</button>
     </div>
 
     <div class="kanban-board">
@@ -163,16 +172,16 @@ $grupoTema = $_SESSION['grupo_tema'] ?? 'Projeto Integrador';
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content bg-white text-dark border-0 shadow">
       <div class="modal-header border-bottom">
-        <h5 class="modal-title fw-bold" id="modalUploadTitle">Entregáveis & Recados da Tarefa</h5>
+        <h5 class="modal-title fw-bold fs-6" id="modalUploadTitle">Entregáveis & Recados da Tarefa</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="upload_tarefa_id">
         <div class="mb-3">
             <label class="form-label fw-bold small text-secondary">Recado / Comentário para o Professor:</label>
-            <div class="input-group">
+            <div class="d-flex flex-column flex-sm-row gap-2">
                 <input type="text" id="input_recado_aluno" class="form-control" placeholder="Deixar uma mensagem no card...">
-                <button class="btn btn-primary" type="button" id="btn-salvar-recado"><i class="fa-solid fa-paper-plane me-1"></i>Enviar</button>
+                <button class="btn btn-primary fw-semibold text-nowrap" type="button" id="btn-salvar-recado"><i class="fa-solid fa-paper-plane me-1"></i>Enviar</button>
             </div>
         </div>
 
@@ -258,7 +267,7 @@ function criarCardElement(tarefa) {
 
     card.innerHTML = `
         <div class="d-flex justify-content-between align-items-start mb-2">
-            <h6 class="fw-bold mb-0 text-slate-800">${escapeHtml(tarefa.titulo)}</h6>
+            <h6 class="fw-bold mb-0 text-slate-800 fs-6">${escapeHtml(tarefa.titulo)}</h6>
             ${ultimaVersao > 0 ? `<span class="badge badge-version">v${ultimaVersao}</span>` : ''}
         </div>
         <p class="small text-secondary mb-2">${escapeHtml(tarefa.descricao || 'Sem descrição')}</p>

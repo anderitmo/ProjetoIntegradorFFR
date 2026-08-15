@@ -31,11 +31,27 @@ $profNome = $_SESSION['prof_nome'] ?? 'Professor';
             background-color: #ffffff;
             border-bottom: 1px solid #e2e8f0;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            padding: 0.75rem 1rem;
+        }
+        .brand-title {
+            font-size: clamp(1rem, 4vw, 1.25rem);
+        }
+        .nav-tabs {
+            border-bottom: 2px solid #e2e8f0;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+        .nav-tabs .nav-item {
+            white-space: nowrap;
         }
         .nav-tabs .nav-link {
             color: #64748b;
             border: none;
             font-weight: 600;
+            padding: 0.65rem 1rem;
+            font-size: 0.9rem;
         }
         .nav-tabs .nav-link.active {
             color: #0284c7;
@@ -46,16 +62,22 @@ $profNome = $_SESSION['prof_nome'] ?? 'Professor';
             background-color: #ffffff;
             border: 1px solid #e2e8f0;
             border-radius: 12px;
-            padding: 1.5rem;
+            padding: 1.25rem;
             margin-top: 1rem;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02);
+        }
+        @media (max-width: 576px) {
+            .tab-content-card {
+                padding: 0.85rem;
+            }
         }
         .fc {
             background-color: #ffffff;
             color: #0f172a;
             border-radius: 8px;
-            padding: 1rem;
+            padding: 0.75rem;
             border: 1px solid #e2e8f0;
+            font-size: clamp(0.75rem, 3vw, 0.9rem);
         }
         .fc-theme-standard td, .fc-theme-standard th {
             border-color: #cbd5e1 !important;
@@ -65,14 +87,21 @@ $profNome = $_SESSION['prof_nome'] ?? 'Professor';
             gap: 1rem;
             overflow-x: auto;
             padding-bottom: 1rem;
+            -webkit-overflow-scrolling: touch;
         }
         .kanban-col-prof {
-            flex: 1;
-            min-width: 260px;
+            flex: 0 0 270px;
+            width: 270px;
             background-color: #f8fafc;
             border-radius: 8px;
             border: 1px solid #e2e8f0;
             padding: 0.85rem;
+        }
+        @media (min-width: 1200px) {
+            .kanban-col-prof {
+                flex: 1;
+                width: auto;
+            }
         }
         .kanban-card-prof {
             background-color: #ffffff;
@@ -89,36 +118,37 @@ $profNome = $_SESSION['prof_nome'] ?? 'Professor';
             font-size: 0.825rem;
             color: #334155;
             border-left: 3px solid #0284c7;
+            word-break: break-word;
         }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-light navbar-custom px-4">
-    <div class="container-fluid">
-        <span class="navbar-brand mb-0 h1 text-primary fw-bold">
-            <i class="fa-solid fa-chalkboard-user me-2"></i>PI Management | Portal Docente
+<nav class="navbar navbar-light navbar-custom mb-3">
+    <div class="container-fluid d-flex flex-row justify-content-between align-items-center">
+        <span class="navbar-brand mb-0 brand-title text-primary fw-bold text-truncate" style="max-width: 65%;">
+            <i class="fa-solid fa-chalkboard-user me-1 me-sm-2"></i>PI | Portal Docente
         </span>
-        <div class="d-flex align-items-center gap-3">
-            <span class="text-secondary fw-semibold"><i class="fa-solid fa-user-tie me-1 text-primary"></i> <?php echo htmlspecialchars($profNome); ?></span>
+        <div class="d-flex align-items-center gap-2 gap-sm-3">
+            <span class="text-secondary fw-semibold small d-none d-sm-inline"><i class="fa-solid fa-user-tie me-1 text-primary"></i> <?php echo htmlspecialchars($profNome); ?></span>
             <a href="index.php" class="btn btn-outline-danger btn-sm fw-semibold"><i class="fa-solid fa-right-from-bracket me-1"></i>Sair</a>
         </div>
     </div>
 </nav>
 
-<div class="container-fluid px-4 my-4">
+<div class="container-fluid px-2 px-sm-4 my-2 my-sm-4">
     <ul class="nav nav-tabs" id="profTabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="tab-kanban" data-bs-toggle="tab" data-bs-target="#content-kanban" type="button" role="tab"><i class="fa-solid fa-kanban me-2"></i>Kanban Geral</button>
+            <button class="nav-link active" id="tab-kanban" data-bs-toggle="tab" data-bs-target="#content-kanban" type="button" role="tab"><i class="fa-solid fa-kanban me-1 me-sm-2"></i>Kanban Geral</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab-agenda" data-bs-toggle="tab" data-bs-target="#content-agenda" type="button" role="tab"><i class="fa-regular fa-calendar-check me-2"></i>Agenda de Bancas</button>
+            <button class="nav-link" id="tab-agenda" data-bs-toggle="tab" data-bs-target="#content-agenda" type="button" role="tab"><i class="fa-regular fa-calendar-check me-1 me-sm-2"></i>Agenda</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab-ciclos" data-bs-toggle="tab" data-bs-target="#content-ciclos" type="button" role="tab"><i class="fa-solid fa-sitemap me-2"></i>Gestão de Ciclos e Grupos</button>
+            <button class="nav-link" id="tab-ciclos" data-bs-toggle="tab" data-bs-target="#content-ciclos" type="button" role="tab"><i class="fa-solid fa-sitemap me-1 me-sm-2"></i>Ciclos e Grupos</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab-profs" data-bs-toggle="tab" data-bs-target="#content-profs" type="button" role="tab"><i class="fa-solid fa-users-gear me-2"></i>Gestão de Professores</button>
+            <button class="nav-link" id="tab-profs" data-bs-toggle="tab" data-bs-target="#content-profs" type="button" role="tab"><i class="fa-solid fa-users-gear me-1 me-sm-2"></i>Professores</button>
         </li>
     </ul>
 
@@ -126,32 +156,32 @@ $profNome = $_SESSION['prof_nome'] ?? 'Professor';
 
         <!-- Aba 1: Kanban Geral -->
         <div class="tab-pane fade show active tab-content-card" id="content-kanban" role="tabpanel">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="text-dark fw-bold mb-0">Acompanhamento dos Grupos</h5>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#modalCriarTarefa"><i class="fa-solid fa-plus me-1"></i>Nova Tarefa para Todos os Grupos</button>
-                    <select id="select-grupo-prof" class="form-select form-select-sm border-secondary" style="width: 280px;">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3">
+                <h5 class="text-dark fw-bold mb-0 fs-6 fs-sm-5">Acompanhamento dos Grupos</h5>
+                <div class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2 w-100 w-md-auto">
+                    <button class="btn btn-sm btn-primary fw-semibold text-nowrap" data-bs-toggle="modal" data-bs-target="#modalCriarTarefa"><i class="fa-solid fa-plus me-1"></i>Nova Tarefa</button>
+                    <select id="select-grupo-prof" class="form-select form-select-sm border-secondary w-100 w-sm-auto" style="min-width: 220px;">
                         <option value="todos">-- Visão Geral (Todos os Grupos) --</option>
                     </select>
-                    <button class="btn btn-sm btn-outline-primary fw-semibold" onclick="carregarKanbanProf()"><i class="fa-solid fa-arrows-rotate me-1"></i>Atualizar</button>
+                    <button class="btn btn-sm btn-outline-primary fw-semibold text-nowrap" onclick="carregarKanbanProf()"><i class="fa-solid fa-arrows-rotate me-1"></i>Atualizar</button>
                 </div>
             </div>
 
             <div class="kanban-board-prof">
                 <div class="kanban-col-prof">
-                    <h6 class="text-danger fw-bold"><i class="fa-regular fa-circle-dot me-1"></i>A Fazer (<span id="c-a_fazer">0</span>)</h6>
+                    <h6 class="text-danger fw-bold fs-6"><i class="fa-regular fa-circle-dot me-1"></i>A Fazer (<span id="c-a_fazer">0</span>)</h6>
                     <div id="pcol-a_fazer"></div>
                 </div>
                 <div class="kanban-col-prof">
-                    <h6 class="text-warning fw-bold"><i class="fa-solid fa-spinner me-1"></i>Em Andamento (<span id="c-em_andamento">0</span>)</h6>
+                    <h6 class="text-warning fw-bold fs-6"><i class="fa-solid fa-spinner me-1"></i>Em Andamento (<span id="c-em_andamento">0</span>)</h6>
                     <div id="pcol-em_andamento"></div>
                 </div>
                 <div class="kanban-col-prof">
-                    <h6 class="text-primary fw-bold"><i class="fa-solid fa-magnifying-glass me-1"></i>Revisão (<span id="c-revisao">0</span>)</h6>
+                    <h6 class="text-primary fw-bold fs-6"><i class="fa-solid fa-magnifying-glass me-1"></i>Revisão (<span id="c-revisao">0</span>)</h6>
                     <div id="pcol-revisao"></div>
                 </div>
                 <div class="kanban-col-prof">
-                    <h6 class="text-success fw-bold"><i class="fa-solid fa-circle-check me-1"></i>Concluído (<span id="c-concluido">0</span>)</h6>
+                    <h6 class="text-success fw-bold fs-6"><i class="fa-solid fa-circle-check me-1"></i>Concluído (<span id="c-concluido">0</span>)</h6>
                     <div id="pcol-concluido"></div>
                 </div>
             </div>
@@ -160,40 +190,40 @@ $profNome = $_SESSION['prof_nome'] ?? 'Professor';
         <!-- Aba 2: Agenda de Bancas -->
         <div class="tab-pane fade tab-content-card" id="content-agenda" role="tabpanel">
             <div class="row">
-                <div class="col-md-4 mb-4">
+                <div class="col-lg-4 mb-4">
                     <div class="card bg-white text-dark border shadow-sm">
-                        <div class="card-header bg-white border-bottom fw-bold text-primary"><i class="fa-solid fa-wand-magic-sparkles me-2"></i>Distribuir Agendamento Automático</div>
+                        <div class="card-header bg-white border-bottom fw-bold text-primary"><i class="fa-solid fa-wand-magic-sparkles me-2"></i>Distribuir Agendamento</div>
                         <div class="card-body">
                             <form id="form-distribuir-agenda" onsubmit="return false;">
-                                <div class="mb-3">
+                                <div class="mb-2">
                                     <label class="form-label small fw-semibold text-secondary">Data de Início (Período)</label>
                                     <input type="date" class="form-control form-control-sm" id="agenda_inicio" required>
                                 </div>
-                                <div class="mb-3">
+                                <div class="mb-2">
                                     <label class="form-label small fw-semibold text-secondary">Data de Fim (Período)</label>
                                     <input type="date" class="form-control form-control-sm" id="agenda_fim" required>
                                 </div>
-                                <div class="mb-3">
+                                <div class="mb-2">
                                     <label class="form-label small fw-semibold text-secondary">Grupos por Sábado</label>
                                     <input type="number" class="form-control form-control-sm" id="agenda_grupos_sabado" value="3" min="1">
                                 </div>
-                                <div class="mb-3">
-                                    <label class="form-label small fw-semibold text-secondary">Feriados a Excluir (Separados por vírgula)</label>
+                                <div class="mb-2">
+                                    <label class="form-label small fw-semibold text-secondary">Feriados a Excluir (por vírgula)</label>
                                     <input type="text" class="form-control form-control-sm" id="agenda_feriados" placeholder="2025-04-19, 2025-05-03">
                                 </div>
                                 <div class="form-check mb-3">
                                     <input class="form-check-input" type="checkbox" id="agenda_limpar_futuros">
                                     <label class="form-check-label small text-secondary" for="agenda_limpar_futuros">
-                                        Limpar agendas futuras antes de recalcular
+                                        Limpar agendas futuras
                                     </label>
                                 </div>
-                                <button type="button" class="btn btn-primary btn-sm w-100 fw-semibold" id="btn-gerar-agenda"><i class="fa-solid fa-calendar-plus me-1"></i>Calcular e Distribuir Bancas</button>
+                                <button type="button" class="btn btn-primary btn-sm w-100 fw-semibold" id="btn-gerar-agenda"><i class="fa-solid fa-calendar-plus me-1"></i>Calcular e Distribuir</button>
                             </form>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-8">
+                <div class="col-lg-8">
                     <div id="calendar"></div>
                 </div>
             </div>
@@ -202,14 +232,14 @@ $profNome = $_SESSION['prof_nome'] ?? 'Professor';
         <!-- Aba 3: Gestão de Ciclos e Grupos -->
         <div class="tab-pane fade tab-content-card" id="content-ciclos" role="tabpanel">
             <div class="row">
-                <div class="col-md-5 mb-4">
+                <div class="col-lg-5 mb-4">
                     <!-- Cadastrar Semestre/Ciclo -->
                     <div class="card bg-white text-dark border shadow-sm mb-4">
                         <div class="card-header bg-white border-bottom fw-bold text-primary"><i class="fa-solid fa-plus-circle me-2"></i>Cadastrar Ano / Semestre Corrente</div>
                         <div class="card-body">
-                            <div class="input-group">
+                            <div class="d-flex flex-column flex-sm-row gap-2">
                                 <input type="text" id="novo_semestre_nome" class="form-control" placeholder="Ex: 2025.2">
-                                <button class="btn btn-success fw-semibold" id="btn-criar-ciclo">Criar e Ativar</button>
+                                <button class="btn btn-success fw-semibold text-nowrap" id="btn-criar-ciclo">Criar e Ativar</button>
                             </div>
                         </div>
                     </div>
@@ -246,7 +276,7 @@ $profNome = $_SESSION['prof_nome'] ?? 'Professor';
                     <div class="card bg-white text-dark border shadow-sm">
                         <div class="card-header bg-white border-bottom fw-bold text-primary"><i class="fa-solid fa-copy me-2"></i>Copiar Grupos de Ciclo Anterior</div>
                         <div class="card-body">
-                            <p class="small text-muted mb-2">Clona todos os grupos de um ciclo passado para o ciclo atual, incrementando o <strong>Nível do PI (Ex: PI 1 -> PI 2)</strong>.</p>
+                            <p class="small text-muted mb-2">Clona grupos de um ciclo passado incrementando o <strong>Nível do PI (Ex: PI 1 -> PI 2)</strong>.</p>
                             <div class="mb-2">
                                 <label class="form-label small text-secondary fw-semibold">Ciclo Origem</label>
                                 <select id="select-ciclo-origem" class="form-select form-select-sm"></select>
@@ -260,8 +290,8 @@ $profNome = $_SESSION['prof_nome'] ?? 'Professor';
                     </div>
                 </div>
 
-                <div class="col-md-7">
-                    <h5 class="text-dark fw-bold mb-3">Ciclos Cadastrados e Grupos</h5>
+                <div class="col-lg-7">
+                    <h5 class="text-dark fw-bold mb-3 fs-6 fs-sm-5">Ciclos Cadastrados e Grupos</h5>
                     <div id="container-lista-ciclos"></div>
                 </div>
             </div>
@@ -270,16 +300,16 @@ $profNome = $_SESSION['prof_nome'] ?? 'Professor';
         <!-- Aba 4: Gestão de Professores (CRUD) -->
         <div class="tab-pane fade tab-content-card" id="content-profs" role="tabpanel">
             <div class="row">
-                <div class="col-md-4 mb-4">
+                <div class="col-lg-4 mb-4">
                     <div class="card bg-white text-dark border shadow-sm">
                         <div class="card-header bg-white border-bottom fw-bold text-primary"><i class="fa-solid fa-user-plus me-2"></i>Cadastrar / Editar Professor</div>
                         <div class="card-body">
                             <input type="hidden" id="prof_id_edit" value="0">
-                            <div class="mb-3">
+                            <div class="mb-2">
                                 <label class="form-label small fw-semibold text-secondary">Nome Completo</label>
                                 <input type="text" id="prof_nome_input" class="form-control form-control-sm" placeholder="Ex: Dr. Roberto Alves">
                             </div>
-                            <div class="mb-3">
+                            <div class="mb-2">
                                 <label class="form-label small fw-semibold text-secondary">Usuário de Acesso</label>
                                 <input type="text" id="prof_usuario_input" class="form-control form-control-sm" placeholder="Ex: roberto">
                             </div>
@@ -292,10 +322,10 @@ $profNome = $_SESSION['prof_nome'] ?? 'Professor';
                     </div>
                 </div>
 
-                <div class="col-md-8">
-                    <h5 class="text-dark fw-bold mb-3">Professores Cadastrados no Sistema</h5>
+                <div class="col-lg-8">
+                    <h5 class="text-dark fw-bold mb-3 fs-6 fs-sm-5">Professores Cadastrados</h5>
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle border bg-white">
+                        <table class="table table-hover align-middle border bg-white small">
                             <thead class="table-light">
                                 <tr>
                                     <th>ID</th>
@@ -314,31 +344,37 @@ $profNome = $_SESSION['prof_nome'] ?? 'Professor';
     </div>
 </div>
 
-<!-- Modal Cadastrar Nova Tarefa para Todos os Grupos -->
+<!-- Modal Cadastrar Nova Tarefa -->
 <div class="modal fade" id="modalCriarTarefa" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content bg-white text-dark border-0 shadow">
       <div class="modal-header border-bottom">
-        <h5 class="modal-title fw-bold text-primary">Nova Tarefa para Todos os Grupos</h5>
+        <h5 class="modal-title fw-bold text-primary fs-6">Cadastrar Nova Tarefa</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="mb-3">
+            <label for="nova_tarefa_alvo_grupo" class="form-label fw-semibold text-secondary small">Atribuir Tarefa Para:</label>
+            <select id="nova_tarefa_alvo_grupo" class="form-select">
+                <option value="todos">-- Todos os Grupos do Ciclo Ativo --</option>
+            </select>
+        </div>
+        <div class="mb-3">
             <label for="nova_tarefa_titulo" class="form-label fw-semibold text-secondary small">Título da Tarefa</label>
-            <input type="text" id="nova_tarefa_titulo" class="form-control" placeholder="Ex: Entrega do Relatório Técnico">
+            <input type="text" id="nova_tarefa_titulo" class="form-control" placeholder="Ex: Reunião de Orientação / Relatório Final">
         </div>
         <div class="mb-3">
             <label for="nova_tarefa_desc" class="form-label fw-semibold text-secondary small">Descrição / Orientação</label>
-            <textarea id="nova_tarefa_desc" class="form-control" rows="3" placeholder="Detalhamento das entregas requeridas..."></textarea>
+            <textarea id="nova_tarefa_desc" class="form-control" rows="3" placeholder="Detalhamento das entregas ou pauta da reunião..."></textarea>
         </div>
         <div class="mb-3">
-            <label for="nova_tarefa_prazo" class="form-label fw-semibold text-secondary small">Data Limite de Entrega</label>
+            <label for="nova_tarefa_prazo" class="form-label fw-semibold text-secondary small">Data Limite / Prazo</label>
             <input type="date" id="nova_tarefa_prazo" class="form-control">
         </div>
       </div>
       <div class="modal-footer border-top">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary fw-semibold" id="btn-salvar-nova-tarefa"><i class="fa-solid fa-paper-plane me-1"></i>Cadastrar para Todos os Grupos</button>
+        <button type="button" class="btn btn-primary fw-semibold" id="btn-salvar-nova-tarefa"><i class="fa-solid fa-paper-plane me-1"></i>Cadastrar Tarefa</button>
       </div>
     </div>
   </div>
@@ -373,8 +409,11 @@ async function carregarGruposSelect() {
         const data = await res.json();
 
         if (data.success) {
-            const select = document.getElementById('select-grupo-prof');
-            select.innerHTML = '<option value="todos">-- Visão Geral (Todos os Grupos) --</option>';
+            const selectFilter = document.getElementById('select-grupo-prof');
+            const selectModal = document.getElementById('nova_tarefa_alvo_grupo');
+
+            selectFilter.innerHTML = '<option value="todos">-- Visão Geral (Todos os Grupos) --</option>';
+            selectModal.innerHTML = '<option value="todos">-- Todos os Grupos do Ciclo Ativo --</option>';
 
             let todosGrupos = [];
             data.ciclos.forEach(c => {
@@ -382,10 +421,11 @@ async function carregarGruposSelect() {
             });
 
             todosGrupos.forEach(g => {
-                const opt = document.createElement('option');
-                opt.value = g.id;
-                opt.textContent = `${g.codigo_acesso_unico} - ${g.tema} (PI ${g.nivel_pi})`;
-                select.appendChild(opt);
+                const optFilter = new Option(`${g.codigo_acesso_unico} - ${g.tema} (PI ${g.nivel_pi})`, g.id);
+                const optModal = new Option(`Grupo: ${g.codigo_acesso_unico} - ${g.tema}`, g.id);
+
+                selectFilter.add(optFilter);
+                selectModal.add(optModal);
             });
 
             carregarKanbanProf();
@@ -406,6 +446,8 @@ async function carregarKanbanProf() {
 
         if (data.success) {
             renderizarKanbanProf(data.tarefas);
+        } else {
+            console.error('Erro na resposta:', data.message);
         }
     } catch (err) {
         console.error('Erro ao carregar tarefas no painel docente', err);
@@ -428,9 +470,9 @@ function renderizarKanbanProf(tarefas) {
             card.innerHTML = `
                 <div class="d-flex justify-content-between align-items-center mb-1">
                     <span class="badge bg-primary text-white">${escapeHtml(t.grupo_codigo || 'G' + t.grupo_id)}</span>
-                    <small class="text-muted fw-semibold">${escapeHtml(t.grupo_tema || '')}</small>
+                    <small class="text-muted fw-semibold text-truncate" style="max-width: 140px;">${escapeHtml(t.grupo_tema || '')}</small>
                 </div>
-                <div class="fw-bold text-dark mb-1">${escapeHtml(t.titulo)}</div>
+                <div class="fw-bold text-dark mb-1 fs-6">${escapeHtml(t.titulo)}</div>
                 <div class="small text-secondary mb-2">${escapeHtml(t.descricao || '')}</div>
                 ${t.recado ? `<div class="notes-box-prof mb-2"><i class="fa-solid fa-comment-dots me-1 text-primary"></i>${escapeHtml(t.recado)}</div>` : ''}
                 ${ultArq ? `
@@ -456,8 +498,9 @@ function renderizarKanbanProf(tarefas) {
     });
 }
 
-// Cadastrar nova tarefa replicada para todos os grupos
+// Cadastrar nova tarefa para todos os grupos ou um grupo específico
 document.getElementById('btn-salvar-nova-tarefa').addEventListener('click', async () => {
+    const alvoGrupo = document.getElementById('nova_tarefa_alvo_grupo').value;
     const titulo = document.getElementById('nova_tarefa_titulo').value.trim();
     const descricao = document.getElementById('nova_tarefa_desc').value.trim();
     const prazo = document.getElementById('nova_tarefa_prazo').value;
@@ -471,7 +514,7 @@ document.getElementById('btn-salvar-nova-tarefa').addEventListener('click', asyn
         const res = await fetch('api/tarefas/listar.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ titulo, descricao, data_prazo: prazo })
+            body: JSON.stringify({ grupo_id: alvoGrupo, titulo, descricao, data_prazo: prazo })
         });
         const data = await res.json();
 

@@ -17,18 +17,24 @@
             justify-content: center;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             color: #0f172a;
+            padding: 1rem;
         }
         .login-card {
             background-color: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 12px;
+            border-radius: 16px;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-            padding: 2.5rem;
+            padding: 2rem;
             max-width: 440px;
             width: 100%;
         }
+        @media (max-width: 576px) {
+            .login-card {
+                padding: 1.5rem;
+            }
+        }
         .brand-logo {
-            font-size: 1.875rem;
+            font-size: clamp(1.5rem, 5vw, 1.875rem);
             font-weight: 800;
             color: #0284c7;
             text-align: center;
@@ -38,7 +44,7 @@
         .sub-title {
             text-align: center;
             color: #64748b;
-            font-size: 0.925rem;
+            font-size: clamp(0.85rem, 3.5vw, 0.925rem);
             margin-bottom: 2rem;
         }
         .btn-custom {
@@ -64,6 +70,7 @@
             border-color: #cbd5e1;
             padding: 0.65rem 0.85rem;
             border-radius: 8px;
+            font-size: 0.95rem;
         }
         .form-control:focus, .form-select:focus {
             border-color: #38bdf8;
@@ -79,12 +86,12 @@
 
     <!-- Seção de Acesso de Aluno -->
     <div id="secao-aluno">
-        <h5 class="mb-3 text-dark fw-bold">Acesso do Aluno</h5>
+        <h5 class="mb-3 text-dark fw-bold fs-6">Acesso do Aluno</h5>
         <div class="mb-3">
             <label for="codigo_acesso" class="form-label text-secondary small fw-semibold">Código Único da Sala / Grupo</label>
-            <div class="input-group">
+            <div class="d-flex flex-column flex-sm-row gap-2">
                 <input type="text" class="form-control" id="codigo_acesso" placeholder="Ex: PI2025-G1">
-                <button class="btn btn-outline-primary fw-semibold" type="button" id="btn-validar-codigo">Validar</button>
+                <button class="btn btn-outline-primary fw-semibold text-nowrap" type="button" id="btn-validar-codigo">Validar</button>
             </div>
         </div>
 
@@ -104,7 +111,7 @@
 
     <!-- Seção de Login do Professor -->
     <div id="secao-professor" class="d-none">
-        <h5 class="mb-3 text-dark fw-bold">Acesso do Professor</h5>
+        <h5 class="mb-3 text-dark fw-bold fs-6">Acesso do Professor</h5>
         <form id="form-login-prof" onsubmit="return false;">
             <div class="mb-3">
                 <label for="prof_usuario" class="form-label text-secondary small fw-semibold">Usuário</label>

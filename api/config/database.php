@@ -13,6 +13,14 @@ try {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false,
     ]);
+
+    // Assegura que colunas opcionais recentes como 'recado' existam na tabela tarefas sem lançar erro
+    try {
+        $pdo->exec("ALTER TABLE tarefas ADD COLUMN recado TEXT NULL");
+    } catch (PDOException $ignored) {
+        // Coluna já existe
+    }
+
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode([
