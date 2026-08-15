@@ -1,6 +1,6 @@
 <?php
 // Endpoint: api/tarefas/listar.php
-// GET: Retorna JSON com as tarefas do grupo filtrado pelo $_SESSION['grupo_id'] ou informado via GET por professor.
+// GET: Retorna JSON com as tarefas do grupo informado via GET ou $_SESSION['grupo_id']. Se grupo_id=todos para professor, retorna todas as tarefas de todos os grupos.
 // POST: Permite ao professor cadastrar uma nova tarefa que é replicada para TODOS os grupos do ciclo ativo.
 
 require_once __DIR__ . '/../config/auth_check.php';
@@ -77,9 +77,50 @@ if ($method === 'POST') {
     }
 }
 
-// Método GET: Listar tarefas de um grupo específico
-$grupo_id = 0;
+// Método GET: Listar tarefas de um grupo específico ou de Todos os Grupos (se professor passar grupo_id=todos)
+$grupo_id_raw = $_GET['grupo_id'] ?? null;
 
+if (isset($_SESSION['prof_id']) && $grupo_id_raw === 'todos') {
+    // Retorna todas as tarefas de todos os grupos do ciclo ativo com informações do grupo
+    try {
+        $stmt = $pdo->query('
+            SELECT t.id, t.grupo_id, t.titulo, t.descricao, t.status_kanban, t.data_prazo, t.recado, t.criado_em,
+                   g.codigo_acesso_unico AS grupo_codigo, g.tema AS grupo_tema, g.nivel_pi AS grupo_nivel
+            FROM tarefas t
+            JOIN grupos g ON t.grupo_id = g.id
+            JOIN ciclos c ON g.ciclo_id = c.id
+            WHERE c.status_ativo = 1
+            ORDER BY g.id ASC, t.id ASC
+        ');
+        $tarefas = $stmt->fetchAll();
+
+        foreach ($tarefas as &$tarefa) {
+            $stmtArq = $pdo->prepare('
+                SELECT ta.id, ta.caminho_arquivo, ta.versao, ta.data_envio, a.nome as aluno_nome
+                FROM tarefa_arquivos ta
+                JOIN alunos a ON ta.aluno_id = a.id
+                WHERE ta.tarefa_id = :tarefa_id
+                ORDER BY ta.versao DESC
+            ');
+            $stmtArq->execute([':tarefa_id' => $tarefa['id']]);
+            $tarefa['arquivos'] = $stmtArq->fetchAll();
+        }
+
+        echo json_encode([
+            'success' => true,
+            'visão_geral' => true,
+            'tarefas' => $tarefas
+        ], JSON_UNESCAPED_UNICODE);
+        exit;
+
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Erro ao buscar visão geral das tarefas.'], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+}
+
+$grupo_id = 0;
 if (isset($_SESSION['prof_id']) && isset($_GET['grupo_id'])) {
     $grupo_id = intval($_GET['grupo_id']);
 } elseif (isset($_SESSION['grupo_id'])) {
@@ -93,17 +134,18 @@ if (!$grupo_id) {
 }
 
 try {
-    // Busca tarefas do grupo
+    // Busca tarefas do grupo específico
     $stmt = $pdo->prepare('
-        SELECT id, grupo_id, titulo, descricao, status_kanban, data_prazo, recado, criado_em
-        FROM tarefas
-        WHERE grupo_id = :grupo_id
-        ORDER BY id ASC
+        SELECT t.id, t.grupo_id, t.titulo, t.descricao, t.status_kanban, t.data_prazo, t.recado, t.criado_em,
+               g.codigo_acesso_unico AS grupo_codigo, g.tema AS grupo_tema
+        FROM tarefas t
+        JOIN grupos g ON t.grupo_id = g.id
+        WHERE t.grupo_id = :grupo_id
+        ORDER BY t.id ASC
     ');
     $stmt->execute([':grupo_id' => $grupo_id]);
     $tarefas = $stmt->fetchAll();
 
-    // Para cada tarefa, busca o histórico de arquivos enviados
     foreach ($tarefas as &$tarefa) {
         $stmtArq = $pdo->prepare('
             SELECT ta.id, ta.caminho_arquivo, ta.versao, ta.data_envio, a.nome as aluno_nome

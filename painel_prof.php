@@ -68,7 +68,7 @@ $profNome = $_SESSION['prof_nome'] ?? 'Professor';
         }
         .kanban-col-prof {
             flex: 1;
-            min-width: 250px;
+            min-width: 260px;
             background-color: #f8fafc;
             border-radius: 8px;
             border: 1px solid #e2e8f0;
@@ -115,7 +115,10 @@ $profNome = $_SESSION['prof_nome'] ?? 'Professor';
             <button class="nav-link" id="tab-agenda" data-bs-toggle="tab" data-bs-target="#content-agenda" type="button" role="tab"><i class="fa-regular fa-calendar-check me-2"></i>Agenda de Bancas</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab-ciclos" data-bs-toggle="tab" data-bs-target="#content-ciclos" type="button" role="tab"><i class="fa-solid fa-arrows-rotate me-2"></i>Ciclos e Importação</button>
+            <button class="nav-link" id="tab-ciclos" data-bs-toggle="tab" data-bs-target="#content-ciclos" type="button" role="tab"><i class="fa-solid fa-sitemap me-2"></i>Gestão de Ciclos e Grupos</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tab-profs" data-bs-toggle="tab" data-bs-target="#content-profs" type="button" role="tab"><i class="fa-solid fa-users-gear me-2"></i>Gestão de Professores</button>
         </li>
     </ul>
 
@@ -127,8 +130,8 @@ $profNome = $_SESSION['prof_nome'] ?? 'Professor';
                 <h5 class="text-dark fw-bold mb-0">Acompanhamento dos Grupos</h5>
                 <div class="d-flex gap-2">
                     <button class="btn btn-sm btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#modalCriarTarefa"><i class="fa-solid fa-plus me-1"></i>Nova Tarefa para Todos os Grupos</button>
-                    <select id="select-grupo-prof" class="form-select form-select-sm border-secondary" style="width: 250px;">
-                        <option value="">-- Carregando grupos --</option>
+                    <select id="select-grupo-prof" class="form-select form-select-sm border-secondary" style="width: 280px;">
+                        <option value="todos">-- Visão Geral (Todos os Grupos) --</option>
                     </select>
                     <button class="btn btn-sm btn-outline-primary fw-semibold" onclick="carregarKanbanProf()"><i class="fa-solid fa-arrows-rotate me-1"></i>Atualizar</button>
                 </div>
@@ -196,12 +199,13 @@ $profNome = $_SESSION['prof_nome'] ?? 'Professor';
             </div>
         </div>
 
-        <!-- Aba 3: Ciclos e Importação -->
+        <!-- Aba 3: Gestão de Ciclos e Grupos -->
         <div class="tab-pane fade tab-content-card" id="content-ciclos" role="tabpanel">
             <div class="row">
                 <div class="col-md-5 mb-4">
+                    <!-- Cadastrar Semestre/Ciclo -->
                     <div class="card bg-white text-dark border shadow-sm mb-4">
-                        <div class="card-header bg-white border-bottom fw-bold text-primary"><i class="fa-solid fa-plus-circle me-2"></i>Criar Novo Ciclo / Semestre</div>
+                        <div class="card-header bg-white border-bottom fw-bold text-primary"><i class="fa-solid fa-plus-circle me-2"></i>Cadastrar Ano / Semestre Corrente</div>
                         <div class="card-body">
                             <div class="input-group">
                                 <input type="text" id="novo_semestre_nome" class="form-control" placeholder="Ex: 2025.2">
@@ -210,16 +214,45 @@ $profNome = $_SESSION['prof_nome'] ?? 'Professor';
                         </div>
                     </div>
 
+                    <!-- Cadastrar Novo Grupo -->
+                    <div class="card bg-white text-dark border shadow-sm mb-4">
+                        <div class="card-header bg-white border-bottom fw-bold text-primary"><i class="fa-solid fa-users me-2"></i>Cadastrar Novo Grupo de PI</div>
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <label class="form-label small text-secondary fw-semibold">Ciclo / Semestre</label>
+                                <select id="grupo_ciclo_id" class="form-select form-select-sm"></select>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label small text-secondary fw-semibold">Código Único de Acesso</label>
+                                <input type="text" id="grupo_codigo_acesso" class="form-control form-control-sm" placeholder="Ex: PI2025-G3">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label small text-secondary fw-semibold">Tema do Projeto</label>
+                                <input type="text" id="grupo_tema" class="form-control form-control-sm" placeholder="Ex: Automação Residencial">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label small text-secondary fw-semibold">Nível de PI</label>
+                                <input type="number" id="grupo_nivel_pi" class="form-control form-control-sm" value="1" min="1">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small text-secondary fw-semibold">Nomes dos Alunos (1 por linha)</label>
+                                <textarea id="grupo_alunos_nomes" class="form-control form-control-sm" rows="3" placeholder="João Silva&#10;Maria Santos"></textarea>
+                            </div>
+                            <button class="btn btn-primary btn-sm w-100 fw-semibold" id="btn-criar-grupo"><i class="fa-solid fa-plus me-1"></i>Salvar Novo Grupo</button>
+                        </div>
+                    </div>
+
+                    <!-- Importar e Duplicar Grupos -->
                     <div class="card bg-white text-dark border shadow-sm">
                         <div class="card-header bg-white border-bottom fw-bold text-primary"><i class="fa-solid fa-copy me-2"></i>Copiar Grupos de Ciclo Anterior</div>
                         <div class="card-body">
-                            <p class="small text-muted mb-2">Clona todos os grupos de um ciclo passado para o ciclo atual, incrementando automaticamente o <strong>Nível do PI (Ex: PI 1 -> PI 2)</strong>.</p>
-                            <div class="mb-3">
-                                <label class="form-label small text-secondary fw-semibold">Ciclo de Origem (Passado)</label>
+                            <p class="small text-muted mb-2">Clona todos os grupos de um ciclo passado para o ciclo atual, incrementando o <strong>Nível do PI (Ex: PI 1 -> PI 2)</strong>.</p>
+                            <div class="mb-2">
+                                <label class="form-label small text-secondary fw-semibold">Ciclo Origem</label>
                                 <select id="select-ciclo-origem" class="form-select form-select-sm"></select>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label small text-secondary fw-semibold">Ciclo de Destino (Novo)</label>
+                            <div class="mb-2">
+                                <label class="form-label small text-secondary fw-semibold">Ciclo Destino</label>
                                 <select id="select-ciclo-destino" class="form-select form-select-sm"></select>
                             </div>
                             <button class="btn btn-warning btn-sm w-100 fw-bold text-dark" id="btn-duplicar-grupos"><i class="fa-solid fa-arrow-right-arrow-left me-1"></i>Importar e Incrementar PI</button>
@@ -230,6 +263,50 @@ $profNome = $_SESSION['prof_nome'] ?? 'Professor';
                 <div class="col-md-7">
                     <h5 class="text-dark fw-bold mb-3">Ciclos Cadastrados e Grupos</h5>
                     <div id="container-lista-ciclos"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aba 4: Gestão de Professores (CRUD) -->
+        <div class="tab-pane fade tab-content-card" id="content-profs" role="tabpanel">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card bg-white text-dark border shadow-sm">
+                        <div class="card-header bg-white border-bottom fw-bold text-primary"><i class="fa-solid fa-user-plus me-2"></i>Cadastrar / Editar Professor</div>
+                        <div class="card-body">
+                            <input type="hidden" id="prof_id_edit" value="0">
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold text-secondary">Nome Completo</label>
+                                <input type="text" id="prof_nome_input" class="form-control form-control-sm" placeholder="Ex: Dr. Roberto Alves">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold text-secondary">Usuário de Acesso</label>
+                                <input type="text" id="prof_usuario_input" class="form-control form-control-sm" placeholder="Ex: roberto">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold text-secondary">Senha</label>
+                                <input type="password" id="prof_senha_input" class="form-control form-control-sm" placeholder="Preencha para definir ou alterar">
+                            </div>
+                            <button class="btn btn-primary btn-sm w-100 fw-semibold" id="btn-salvar-prof"><i class="fa-solid fa-floppy-disk me-1"></i>Salvar Professor</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <h5 class="text-dark fw-bold mb-3">Professores Cadastrados no Sistema</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle border bg-white">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Usuário</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-professores"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -281,10 +358,9 @@ let calendarInstance = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     carregarGruposSelect();
-    carregarCiclos();
+    carregarCiclosEProfessores();
     inicializarCalendar();
 
-    // Re-renderiza o FullCalendar quando a aba de agenda é aberta
     document.getElementById('tab-agenda').addEventListener('shown.bs.tab', () => {
         if (calendarInstance) calendarInstance.render();
     });
@@ -298,17 +374,12 @@ async function carregarGruposSelect() {
 
         if (data.success) {
             const select = document.getElementById('select-grupo-prof');
-            select.innerHTML = '';
+            select.innerHTML = '<option value="todos">-- Visão Geral (Todos os Grupos) --</option>';
 
             let todosGrupos = [];
             data.ciclos.forEach(c => {
                 if (c.grupos) todosGrupos.push(...c.grupos);
             });
-
-            if (todosGrupos.length === 0) {
-                select.innerHTML = '<option value="">Nenhum grupo encontrado</option>';
-                return;
-            }
 
             todosGrupos.forEach(g => {
                 const opt = document.createElement('option');
@@ -328,7 +399,6 @@ document.getElementById('select-grupo-prof').addEventListener('change', carregar
 
 async function carregarKanbanProf() {
     const grupoId = document.getElementById('select-grupo-prof').value;
-    if (!grupoId) return;
 
     try {
         const res = await fetch(`api/tarefas/listar.php?grupo_id=${grupoId}`);
@@ -356,6 +426,10 @@ function renderizarKanbanProf(tarefas) {
             const ultArq = t.arquivos && t.arquivos.length > 0 ? t.arquivos[0] : null;
 
             card.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="badge bg-primary text-white">${escapeHtml(t.grupo_codigo || 'G' + t.grupo_id)}</span>
+                    <small class="text-muted fw-semibold">${escapeHtml(t.grupo_tema || '')}</small>
+                </div>
                 <div class="fw-bold text-dark mb-1">${escapeHtml(t.titulo)}</div>
                 <div class="small text-secondary mb-2">${escapeHtml(t.descricao || '')}</div>
                 ${t.recado ? `<div class="notes-box-prof mb-2"><i class="fa-solid fa-comment-dots me-1 text-primary"></i>${escapeHtml(t.recado)}</div>` : ''}
@@ -416,7 +490,7 @@ document.getElementById('btn-salvar-nova-tarefa').addEventListener('click', asyn
     }
 });
 
-// Deixar recado no card do aluno
+// Deixar recado no card
 async function deixarRecadoProf(tarefaId, recadoAtual) {
     const { value: recado } = await Swal.fire({
         title: 'Deixar Recado / Orientação',
@@ -518,7 +592,6 @@ function inicializarCalendar() {
     calendarInstance.render();
 }
 
-// Algoritmo de distribuição de agendamento automático
 document.getElementById('btn-gerar-agenda').addEventListener('click', async () => {
     const dataInicio = document.getElementById('agenda_inicio').value;
     const dataFim = document.getElementById('agenda_fim').value;
@@ -560,26 +633,31 @@ document.getElementById('btn-gerar-agenda').addEventListener('click', async () =
     }
 });
 
-// --- MÓDULO CICLOS E IMPORTAÇÃO ---
-async function carregarCiclos() {
+// --- MÓDULO CICLOS, GRUPOS E PROFESSORES ---
+async function carregarCiclosEProfessores() {
     try {
         const res = await fetch('api/ciclos/gerenciar.php?action=listar');
         const data = await res.json();
 
         if (data.success) {
             const container = document.getElementById('container-lista-ciclos');
+            const selCicloGrupo = document.getElementById('grupo_ciclo_id');
             const selOrigem = document.getElementById('select-ciclo-origem');
             const selDestino = document.getElementById('select-ciclo-destino');
 
             container.innerHTML = '';
+            selCicloGrupo.innerHTML = '';
             selOrigem.innerHTML = '';
             selDestino.innerHTML = '';
 
             data.ciclos.forEach(c => {
                 const opt1 = new Option(`${c.nome_semestre} ${c.status_ativo == 1 ? '(Ativo)' : ''}`, c.id);
                 const opt2 = new Option(`${c.nome_semestre} ${c.status_ativo == 1 ? '(Ativo)' : ''}`, c.id);
-                selOrigem.add(opt1);
-                selDestino.add(opt2);
+                const opt3 = new Option(`${c.nome_semestre} ${c.status_ativo == 1 ? '(Ativo)' : ''}`, c.id);
+
+                selCicloGrupo.add(opt1);
+                selOrigem.add(opt2);
+                selDestino.add(opt3);
 
                 const div = document.createElement('div');
                 div.className = 'card bg-white text-dark border shadow-sm mb-3';
@@ -592,8 +670,8 @@ async function carregarCiclos() {
                         <h6>Grupos Cadastrados (${c.grupos ? c.grupos.length : 0}):</h6>
                         <ul class="list-group list-group-flush">
                             ${c.grupos && c.grupos.length > 0 ? c.grupos.map(g => `
-                                <li class="list-group-item bg-white text-dark border-bottom d-flex justify-content-between py-1 px-0">
-                                    <span><strong>${escapeHtml(g.codigo_acesso_unico)}</strong> - ${escapeHtml(g.tema)}</span>
+                                <li class="list-group-item bg-white text-dark border-bottom d-flex justify-content-between py-2 px-0">
+                                    <span><strong>${escapeHtml(g.codigo_acesso_unico)}</strong> - ${escapeHtml(g.tema)} <small class="text-muted">(${g.total_alunos} alunos)</small></span>
                                     <span class="badge bg-primary">Nível ${g.nivel_pi}</span>
                                 </li>
                             `).join('') : '<li class="list-group-item bg-white text-muted border-0 py-1 px-0">Nenhum grupo vinculado.</li>'}
@@ -602,9 +680,26 @@ async function carregarCiclos() {
                 `;
                 container.appendChild(div);
             });
+
+            // Renderiza tabela de professores
+            const tbody = document.getElementById('tbody-professores');
+            tbody.innerHTML = '';
+            data.professores.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${p.id}</td>
+                    <td class="fw-bold">${escapeHtml(p.nome)}</td>
+                    <td><code>${escapeHtml(p.usuario)}</code></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary py-0 px-2 me-1" onclick="editarProf(${p.id}, '${escapeHtml(p.nome)}', '${escapeHtml(p.usuario)}')"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-sm btn-outline-danger py-0 px-2" onclick="excluirProf(${p.id})"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
     } catch (err) {
-        console.error('Erro ao carregar ciclos', err);
+        console.error('Erro ao carregar ciclos e professores', err);
     }
 }
 
@@ -627,7 +722,7 @@ document.getElementById('btn-criar-ciclo').addEventListener('click', async () =>
         if (data.success) {
             Swal.fire('Sucesso!', 'Novo ciclo criado e ativado com sucesso.', 'success');
             document.getElementById('novo_semestre_nome').value = '';
-            carregarCiclos();
+            carregarCiclosEProfessores();
             carregarGruposSelect();
         } else {
             Swal.fire('Erro', data.message || 'Falha ao criar ciclo.', 'error');
@@ -636,6 +731,122 @@ document.getElementById('btn-criar-ciclo').addEventListener('click', async () =>
         Swal.fire('Erro', 'Erro na requisição ao servidor.', 'error');
     }
 });
+
+// Cadastrar Novo Grupo
+document.getElementById('btn-criar-grupo').addEventListener('click', async () => {
+    const cicloId = document.getElementById('grupo_ciclo_id').value;
+    const codigo = document.getElementById('grupo_codigo_acesso').value.trim();
+    const tema = document.getElementById('grupo_tema').value.trim();
+    const nivel = document.getElementById('grupo_nivel_pi').value;
+    const alunosRaw = document.getElementById('grupo_alunos_nomes').value;
+
+    if (!cicloId || !codigo || !tema) {
+        Swal.fire('Atenção', 'Preencha ciclo, código de acesso e tema do grupo.', 'warning');
+        return;
+    }
+
+    const alunosNomes = alunosRaw.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+
+    try {
+        const res = await fetch('api/ciclos/gerenciar.php?action=criar_grupo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                ciclo_id: cicloId,
+                codigo_acesso_unico: codigo,
+                tema: tema,
+                nivel_pi: nivel,
+                alunos_nomes: alunosNomes
+            })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            Swal.fire('Sucesso!', 'Grupo cadastrado com sucesso!', 'success');
+            document.getElementById('grupo_codigo_acesso').value = '';
+            document.getElementById('grupo_tema').value = '';
+            document.getElementById('grupo_alunos_nomes').value = '';
+            carregarCiclosEProfessores();
+            carregarGruposSelect();
+        } else {
+            Swal.fire('Erro', data.message || 'Erro ao cadastrar grupo.', 'error');
+        }
+    } catch (err) {
+        Swal.fire('Erro', 'Erro na requisição ao servidor.', 'error');
+    }
+});
+
+// Salvar / Editar Professor
+document.getElementById('btn-salvar-prof').addEventListener('click', async () => {
+    const profId = document.getElementById('prof_id_edit').value;
+    const nome = document.getElementById('prof_nome_input').value.trim();
+    const usuario = document.getElementById('prof_usuario_input').value.trim();
+    const senha = document.getElementById('prof_senha_input').value.trim();
+
+    if (!nome || !usuario) {
+        Swal.fire('Atenção', 'Nome e Usuário são obrigatórios.', 'warning');
+        return;
+    }
+
+    try {
+        const res = await fetch('api/ciclos/gerenciar.php?action=salvar_professor', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: profId, nome, usuario, senha })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            Swal.fire('Sucesso!', data.message, 'success');
+            document.getElementById('prof_id_edit').value = '0';
+            document.getElementById('prof_nome_input').value = '';
+            document.getElementById('prof_usuario_input').value = '';
+            document.getElementById('prof_senha_input').value = '';
+            carregarCiclosEProfessores();
+        } else {
+            Swal.fire('Erro', data.message || 'Erro ao salvar professor.', 'error');
+        }
+    } catch (err) {
+        Swal.fire('Erro', 'Erro na requisição.', 'error');
+    }
+});
+
+function editarProf(id, nome, usuario) {
+    document.getElementById('prof_id_edit').value = id;
+    document.getElementById('prof_nome_input').value = nome;
+    document.getElementById('prof_usuario_input').value = usuario;
+    document.getElementById('prof_senha_input').value = '';
+}
+
+async function excluirProf(id) {
+    const confirm = await Swal.fire({
+        title: 'Excluir professor?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sim, excluir',
+        cancelButtonText: 'Cancelar'
+    });
+
+    if (confirm.isConfirmed) {
+        try {
+            const res = await fetch('api/ciclos/gerenciar.php?action=excluir_professor', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                Swal.fire('Excluído!', data.message, 'success');
+                carregarCiclosEProfessores();
+            } else {
+                Swal.fire('Erro', data.message || 'Erro ao excluir.', 'error');
+            }
+        } catch (err) {
+            Swal.fire('Erro', 'Erro na requisição.', 'error');
+        }
+    }
+}
 
 // Duplicar/Importar Grupos
 document.getElementById('btn-duplicar-grupos').addEventListener('click', async () => {
@@ -657,7 +868,7 @@ document.getElementById('btn-duplicar-grupos').addEventListener('click', async (
 
         if (data.success) {
             Swal.fire('Sucesso!', data.message, 'success');
-            carregarCiclos();
+            carregarCiclosEProfessores();
             carregarGruposSelect();
         } else {
             Swal.fire('Erro', data.message || 'Falha ao copiar grupos.', 'error');
