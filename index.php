@@ -10,52 +10,64 @@
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background-color: #f8fafc;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #f8fafc;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: #0f172a;
         }
         .login-card {
-            background-color: rgba(30, 41, 59, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
             padding: 2.5rem;
-            max-width: 480px;
+            max-width: 440px;
             width: 100%;
         }
         .brand-logo {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #38bdf8;
+            font-size: 1.875rem;
+            font-weight: 800;
+            color: #0284c7;
             text-align: center;
-            margin-bottom: 0.5rem;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.25rem;
         }
         .sub-title {
             text-align: center;
-            color: #94a3b8;
+            color: #64748b;
+            font-size: 0.925rem;
             margin-bottom: 2rem;
         }
         .btn-custom {
             background-color: #0284c7;
-            color: #fff;
+            color: #ffffff;
             border: none;
             padding: 0.75rem;
             font-weight: 600;
             border-radius: 8px;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
         }
         .btn-custom:hover {
             background-color: #0369a1;
-            color: #fff;
+            color: #ffffff;
         }
         .toggle-link {
-            color: #38bdf8;
+            color: #0284c7;
             cursor: pointer;
+            font-weight: 600;
             text-decoration: underline;
+        }
+        .form-control, .form-select {
+            border-color: #cbd5e1;
+            padding: 0.65rem 0.85rem;
+            border-radius: 8px;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
         }
     </style>
 </head>
@@ -67,18 +79,18 @@
 
     <!-- Seção de Acesso de Aluno -->
     <div id="secao-aluno">
-        <h5 class="mb-3 text-light">Acesso do Aluno</h5>
+        <h5 class="mb-3 text-dark fw-bold">Acesso do Aluno</h5>
         <div class="mb-3">
-            <label for="codigo_acesso" class="form-label">Código Único da Sala / Grupo</label>
+            <label for="codigo_acesso" class="form-label text-secondary small fw-semibold">Código Único da Sala / Grupo</label>
             <div class="input-group">
                 <input type="text" class="form-control" id="codigo_acesso" placeholder="Ex: PI2025-G1">
-                <button class="btn btn-primary" type="button" id="btn-validar-codigo">Validar</button>
+                <button class="btn btn-outline-primary fw-semibold" type="button" id="btn-validar-codigo">Validar</button>
             </div>
         </div>
 
         <!-- Seleção de Aluno (Exibido após validação) -->
         <div id="container-selecao-aluno" class="d-none mb-3">
-            <label for="select_aluno" class="form-label">Selecione seu Nome na Lista</label>
+            <label for="select_aluno" class="form-label text-secondary small fw-semibold">Selecione seu Nome na Lista</label>
             <select id="select_aluno" class="form-select mb-3">
                 <option value="">-- Escolha seu nome --</option>
             </select>
@@ -92,14 +104,14 @@
 
     <!-- Seção de Login do Professor -->
     <div id="secao-professor" class="d-none">
-        <h5 class="mb-3 text-light">Acesso do Professor</h5>
+        <h5 class="mb-3 text-dark fw-bold">Acesso do Professor</h5>
         <form id="form-login-prof" onsubmit="return false;">
             <div class="mb-3">
-                <label for="prof_usuario" class="form-label">Usuário</label>
+                <label for="prof_usuario" class="form-label text-secondary small fw-semibold">Usuário</label>
                 <input type="text" class="form-control" id="prof_usuario" required placeholder="Digite seu usuário">
             </div>
             <div class="mb-3">
-                <label for="prof_senha" class="form-label">Senha</label>
+                <label for="prof_senha" class="form-label text-secondary small fw-semibold">Senha</label>
                 <input type="password" class="form-control" id="prof_senha" required placeholder="Digite sua senha">
             </div>
             <button type="submit" class="btn btn-custom w-100 mb-3" id="btn-entrar-prof">Entrar no Painel Docente</button>

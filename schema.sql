@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS `tarefas` (
   `descricao` TEXT NULL,
   `status_kanban` ENUM('a_fazer', 'em_andamento', 'revisao', 'concluido') DEFAULT 'a_fazer',
   `data_prazo` DATE NULL,
+  `recado` TEXT NULL,
   `criado_em` DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (`grupo_id`) REFERENCES `grupos`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

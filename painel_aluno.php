@@ -21,14 +21,15 @@ $grupoTema = $_SESSION['grupo_tema'] ?? 'Projeto Integrador';
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #0f172a;
-            color: #f8fafc;
+            background-color: #f8fafc;
+            color: #0f172a;
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         .navbar-custom {
-            background-color: #1e293b;
-            border-bottom: 1px solid #334155;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
         }
         .kanban-board {
             display: flex;
@@ -39,72 +40,83 @@ $grupoTema = $_SESSION['grupo_tema'] ?? 'Projeto Integrador';
         .kanban-col {
             flex: 1;
             min-width: 280px;
-            background-color: #1e293b;
+            background-color: #ffffff;
             border-radius: 12px;
-            border: 1px solid #334155;
+            border: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
             max-height: 80vh;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02);
         }
         .col-header {
             padding: 1rem;
             font-weight: 700;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid #e2e8f0;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .col-header.a_fazer { color: #f87171; border-top: 4px solid #ef4444; border-radius: 12px 12px 0 0; }
-        .col-header.em_andamento { color: #fbbf24; border-top: 4px solid #f59e0b; border-radius: 12px 12px 0 0; }
-        .col-header.revisao { color: #60a5fa; border-top: 4px solid #3b82f6; border-radius: 12px 12px 0 0; }
-        .col-header.concluido { color: #34d399; border-top: 4px solid #10b981; border-radius: 12px 12px 0 0; }
+        .col-header.a_fazer { color: #dc2626; border-top: 4px solid #ef4444; border-radius: 12px 12px 0 0; }
+        .col-header.em_andamento { color: #d97706; border-top: 4px solid #f59e0b; border-radius: 12px 12px 0 0; }
+        .col-header.revisao { color: #2563eb; border-top: 4px solid #3b82f6; border-radius: 12px 12px 0 0; }
+        .col-header.concluido { color: #059669; border-top: 4px solid #10b981; border-radius: 12px 12px 0 0; }
 
         .cards-container {
             padding: 1rem;
             flex-grow: 1;
             overflow-y: auto;
             min-height: 150px;
+            background-color: #f8fafc;
         }
         .kanban-card {
-            background-color: #0f172a;
-            border: 1px solid #334155;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
             padding: 1rem;
             margin-bottom: 0.85rem;
             cursor: grab;
-            transition: transform 0.15s, box-shadow 0.15s;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
         }
         .kanban-card:active {
             cursor: grabbing;
         }
         .kanban-card:hover {
             border-color: #38bdf8;
-            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
         .badge-version {
             background-color: #0284c7;
             font-size: 0.75rem;
         }
+        .notes-box {
+            background-color: #f1f5f9;
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.825rem;
+            color: #334155;
+            border-left: 3px solid #0284c7;
+        }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-dark navbar-custom px-4 mb-4">
+<nav class="navbar navbar-light navbar-custom px-4 mb-4">
     <div class="container-fluid">
-        <span class="navbar-brand mb-0 h1 text-info fw-bold">
+        <span class="navbar-brand mb-0 h1 text-primary fw-bold">
             <i class="fa-solid fa-kanban me-2"></i>PI Kanban | <?php echo htmlspecialchars($grupoTema); ?>
         </span>
         <div class="d-flex align-items-center gap-3">
-            <span class="text-light"><i class="fa-solid fa-user me-1 text-primary"></i> <?php echo htmlspecialchars($alunoNome); ?></span>
-            <a href="index.php" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-right-from-bracket me-1"></i>Sair</a>
+            <span class="text-secondary fw-semibold"><i class="fa-solid fa-user me-1 text-primary"></i> <?php echo htmlspecialchars($alunoNome); ?></span>
+            <a href="index.php" class="btn btn-outline-danger btn-sm fw-semibold"><i class="fa-solid fa-right-from-bracket me-1"></i>Sair</a>
         </div>
     </div>
 </nav>
 
 <div class="container-fluid px-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>Quadro Kanban do Grupo</h4>
-        <button class="btn btn-sm btn-outline-info" onclick="carregarTarefas()"><i class="fa-solid fa-rotate me-1"></i>Atualizar Quadro</button>
+        <h4 class="fw-bold text-slate-800">Quadro Kanban do Grupo</h4>
+        <button class="btn btn-sm btn-outline-primary fw-semibold" onclick="carregarTarefas()"><i class="fa-solid fa-rotate me-1"></i>Atualizar Quadro</button>
     </div>
 
     <div class="kanban-board">
@@ -146,27 +158,37 @@ $grupoTema = $_SESSION['grupo_tema'] ?? 'Projeto Integrador';
     </div>
 </div>
 
-<!-- Modal Upload de Arquivo -->
+<!-- Modal Upload de Arquivo e Recados -->
 <div class="modal fade" id="modalUpload" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content bg-dark text-light border-secondary">
-      <div class="modal-header border-secondary">
-        <h5 class="modal-title" id="modalUploadTitle">Enviar Entregável da Tarefa</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-content bg-white text-dark border-0 shadow">
+      <div class="modal-header border-bottom">
+        <h5 class="modal-title fw-bold" id="modalUploadTitle">Entregáveis & Recados da Tarefa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="upload_tarefa_id">
-        <p class="text-muted small">Formatos permitidos: <strong>PDF</strong> ou <strong>DOCX</strong>. O sistema controla automaticamente as versões enviadas.</p>
         <div class="mb-3">
-            <label for="input_file" class="form-label">Selecione o arquivo:</label>
-            <input class="form-control bg-secondary text-light border-0" type="file" id="input_file" accept=".pdf,.docx,.doc">
+            <label class="form-label fw-bold small text-secondary">Recado / Comentário para o Professor:</label>
+            <div class="input-group">
+                <input type="text" id="input_recado_aluno" class="form-control" placeholder="Deixar uma mensagem no card...">
+                <button class="btn btn-primary" type="button" id="btn-salvar-recado"><i class="fa-solid fa-paper-plane me-1"></i>Enviar</button>
+            </div>
+        </div>
+
+        <hr class="my-3">
+
+        <p class="text-muted small">Formatos permitidos para entregáveis: <strong>PDF</strong> ou <strong>DOCX</strong>.</p>
+        <div class="mb-3">
+            <label for="input_file" class="form-label fw-bold small text-secondary">Selecione o arquivo:</label>
+            <input class="form-control" type="file" id="input_file" accept=".pdf,.docx,.doc">
         </div>
         <div id="historico-versoes" class="mt-3">
-            <h6>Histórico de Envios:</h6>
+            <h6 class="fw-bold small text-secondary">Histórico de Envios:</h6>
             <ul class="list-group list-group-flush" id="lista-versoes"></ul>
         </div>
       </div>
-      <div class="modal-footer border-secondary">
+      <div class="modal-footer border-top">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
         <button type="button" class="btn btn-primary" id="btn-enviar-arquivo"><i class="fa-solid fa-cloud-arrow-up me-1"></i>Enviar Arquivo</button>
       </div>
@@ -236,14 +258,15 @@ function criarCardElement(tarefa) {
 
     card.innerHTML = `
         <div class="d-flex justify-content-between align-items-start mb-2">
-            <h6 class="fw-bold mb-0 text-light">${escapeHtml(tarefa.titulo)}</h6>
+            <h6 class="fw-bold mb-0 text-slate-800">${escapeHtml(tarefa.titulo)}</h6>
             ${ultimaVersao > 0 ? `<span class="badge badge-version">v${ultimaVersao}</span>` : ''}
         </div>
-        <p class="small text-muted mb-2">${escapeHtml(tarefa.descricao || 'Sem descrição')}</p>
+        <p class="small text-secondary mb-2">${escapeHtml(tarefa.descricao || 'Sem descrição')}</p>
+        ${tarefa.recado ? `<div class="notes-box mb-2"><i class="fa-solid fa-comment-dots me-1 text-primary"></i>${escapeHtml(tarefa.recado)}</div>` : ''}
         <div class="d-flex justify-content-between align-items-center mt-3">
-            <small class="text-info"><i class="fa-regular fa-calendar me-1"></i>${tarefa.data_prazo || 'Sem prazo'}</small>
-            <button class="btn btn-sm btn-outline-light py-0 px-2" onclick="abrirModalUpload(${tarefa.id})">
-                <i class="fa-solid fa-paperclip"></i>
+            <small class="text-primary fw-semibold"><i class="fa-regular fa-calendar me-1"></i>${tarefa.data_prazo || 'Sem prazo'}</small>
+            <button class="btn btn-sm btn-outline-primary py-0 px-2" onclick="abrirModalUpload(${tarefa.id})">
+                <i class="fa-solid fa-comments me-1"></i><i class="fa-solid fa-paperclip"></i>
             </button>
         </div>
     `;
@@ -258,7 +281,7 @@ function inicializarSortable() {
         sortableInstances.push(new Sortable(col, {
             group: 'kanban',
             animation: 150,
-            ghostClass: 'bg-secondary',
+            ghostClass: 'bg-light',
             onEnd: async function(evt) {
                 const itemEl = evt.item;
                 const tarefaId = itemEl.dataset.id;
@@ -277,9 +300,8 @@ function inicializarSortable() {
 
                     if (!data.success) {
                         Swal.fire('Erro', data.message || 'Falha ao mover a tarefa.', 'error');
-                        carregarTarefas(); // Reverte a UI em caso de falha
+                        carregarTarefas();
                     } else {
-                        // Atualiza cache local
                         const task = tarefasCache.find(t => t.id == tarefaId);
                         if (task) task.status_kanban = novoStatus;
                         renderizarKanban();
@@ -293,13 +315,14 @@ function inicializarSortable() {
     });
 }
 
-// Modal Upload e Histórico de Arquivos
+// Modal Upload e Histórico de Arquivos + Recados
 function abrirModalUpload(tarefaId) {
     document.getElementById('upload_tarefa_id').value = tarefaId;
     document.getElementById('input_file').value = '';
 
     const tarefa = tarefasCache.find(t => t.id == tarefaId);
-    document.getElementById('modalUploadTitle').textContent = `Entregáveis: ${tarefa ? tarefa.titulo : ''}`;
+    document.getElementById('modalUploadTitle').textContent = `Entregáveis & Recados: ${tarefa ? tarefa.titulo : ''}`;
+    document.getElementById('input_recado_aluno').value = tarefa ? (tarefa.recado || '') : '';
 
     const lista = document.getElementById('lista-versoes');
     lista.innerHTML = '';
@@ -307,23 +330,47 @@ function abrirModalUpload(tarefaId) {
     if (tarefa && tarefa.arquivos && tarefa.arquivos.length > 0) {
         tarefa.arquivos.forEach(arq => {
             const li = document.createElement('li');
-            li.className = 'list-group-item bg-dark text-light border-secondary d-flex justify-content-between align-items-center py-2 px-0';
+            li.className = 'list-group-item bg-white text-dark border-bottom d-flex justify-content-between align-items-center py-2 px-0';
             li.innerHTML = `
                 <div>
                     <strong>Versão ${arq.versao}</strong> <small class="text-muted">(${arq.aluno_nome} em ${arq.data_envio})</small>
                 </div>
-                <a href="${arq.caminho_arquivo}" target="_blank" class="btn btn-sm btn-outline-info">
+                <a href="${arq.caminho_arquivo}" target="_blank" class="btn btn-sm btn-outline-primary">
                     <i class="fa-solid fa-download me-1"></i>Baixar
                 </a>
             `;
             lista.appendChild(li);
         });
     } else {
-        lista.innerHTML = '<li class="list-group-item bg-dark text-muted border-secondary py-2 px-0">Nenhum arquivo enviado ainda.</li>';
+        lista.innerHTML = '<li class="list-group-item bg-white text-muted border-0 py-2 px-0">Nenhum arquivo enviado ainda.</li>';
     }
 
     modalUploadInstance.show();
 }
+
+// Salvar recado/comentário
+document.getElementById('btn-salvar-recado').addEventListener('click', async () => {
+    const tarefaId = document.getElementById('upload_tarefa_id').value;
+    const recado = document.getElementById('input_recado_aluno').value.trim();
+
+    try {
+        const res = await fetch('api/tarefas/mover.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tarefa_id: tarefaId, recado: recado })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            Swal.fire('Salvo!', 'Recado atualizado com sucesso.', 'success');
+            carregarTarefas();
+        } else {
+            Swal.fire('Erro', data.message || 'Erro ao salvar recado.', 'error');
+        }
+    } catch (err) {
+        Swal.fire('Erro', 'Falha na conexão com o servidor.', 'error');
+    }
+});
 
 // Enviar Arquivo via FormData
 document.getElementById('btn-enviar-arquivo').addEventListener('click', async () => {

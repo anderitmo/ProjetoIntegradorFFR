@@ -1,6 +1,6 @@
 <?php
 // Endpoint: api/tarefas/mover.php
-// Atualiza o status_kanban de uma tarefa específica.
+// Atualiza o status_kanban ou o recado/comentário de uma tarefa específica.
 
 require_once __DIR__ . '/../config/auth_check.php';
 require_once __DIR__ . '/../config/database.php';
@@ -8,13 +8,14 @@ require_once __DIR__ . '/../config/database.php';
 $inputData = json_decode(file_get_contents('php://input'), true) ?? $_POST;
 
 $tarefa_id = intval($inputData['tarefa_id'] ?? 0);
-$novo_status = trim($inputData['status_kanban'] ?? '');
+$novo_status = isset($inputData['status_kanban']) ? trim($inputData['status_kanban']) : null;
+$novo_recado = isset($inputData['recado']) ? trim($inputData['recado']) : null;
 
 $status_permitidos = ['a_fazer', 'em_andamento', 'revisao', 'concluido'];
 
-if (!$tarefa_id || !in_array($novo_status, $status_permitidos)) {
+if (!$tarefa_id) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Parâmetros inválidos ou status kanban não reconhecido.'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['success' => false, 'message' => 'Identificador da tarefa não informado.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -33,20 +34,29 @@ try {
         }
     }
 
-    $stmtUpdate = $pdo->prepare('UPDATE tarefas SET status_kanban = :status WHERE id = :id');
-    $stmtUpdate->execute([
-        ':status' => $novo_status,
-        ':id' => $tarefa_id
-    ]);
+    if ($novo_status !== null) {
+        if (!in_array($novo_status, $status_permitidos)) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Status kanban não reconhecido.'], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+        $stmtUpdate = $pdo->prepare('UPDATE tarefas SET status_kanban = :status WHERE id = :id');
+        $stmtUpdate->execute([':status' => $novo_status, ':id' => $tarefa_id]);
+    }
+
+    if ($novo_recado !== null) {
+        $stmtUpdateRecado = $pdo->prepare('UPDATE tarefas SET recado = :recado WHERE id = :id');
+        $stmtUpdateRecado->execute([':recado' => $novo_recado, ':id' => $tarefa_id]);
+    }
 
     echo json_encode([
         'success' => true,
-        'message' => 'Status da tarefa atualizado com sucesso.',
-        'tarefa_id' => $tarefa_id,
-        'novo_status' => $novo_status
+        'message' => 'Tarefa atualizada com sucesso.',
+        'tarefa_id' => $tarefa_id
     ], JSON_UNESCAPED_UNICODE);
 
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Erro ao atualizar status da tarefa.'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['success' => false, 'message' => 'Erro ao atualizar tarefa.'], JSON_UNESCAPED_UNICODE);
 }
