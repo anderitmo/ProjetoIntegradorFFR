@@ -87,8 +87,8 @@ CREATE TABLE IF NOT EXISTS `agenda_bancas` (
 -- Inserção de dados iniciais para testes
 -- Senha do professor: admin123
 INSERT INTO `professores` (`usuario`, `senha_hash`, `nome`) VALUES
-('admin', '$2y$10$4B9Yt0UqGvKzE910x45iQ.sA2V6k0rD0iP.J4L/zQ7O2eW/oTfL/i', 'Prof. Dr. Carlos Silva')
-ON DUPLICATE KEY UPDATE `id`=`id`;
+('admin', '$2y$10$yeXQjv1AnPky5lsbPel.Y.zgWWlxSltsWIJ8SRW8h5g1f95d/Ok.G', 'Prof. Dr. Carlos Silva')
+ON DUPLICATE KEY UPDATE `senha_hash`='$2y$10$yeXQjv1AnPky5lsbPel.Y.zgWWlxSltsWIJ8SRW8h5g1f95d/Ok.G', `id`=`id`;
 
 INSERT INTO `ciclos` (`id`, `nome_semestre`, `status_ativo`) VALUES
 (1, '2025.1', 1)
