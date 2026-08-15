@@ -1,0 +1,5 @@
+# Bloqueia execução de scripts PHP na pasta de uploads por segurança
+<FilesMatch "\.(php|php3|php4|php5|phtml|pl|py|cgi|asp|js)$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
